@@ -1,0 +1,30 @@
+{
+  "name": "mchine",
+  "version": "0.0.1",
+  "description": "A Simple State Machine",
+  "main": "dist/index.js",
+  "module": "dist/index.m.js",
+  "source": "src/index.js",
+  "repository": "HenriqueLimas/mchine",
+  "scripts": {
+    "build": "microbundle",
+    "prepublishOnly": "npm run build",
+    "release": "npm t && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish",
+    "test": "karmatic"
+  },
+  "files": [
+    "src",
+    "dist"
+  ],
+  "keywords": [
+    "state machine",
+    "states"
+  ],
+  "author": "HenriqueLimas",
+  "license": "MIT",
+  "devDependencies": {
+    "karmatic": "^1.2.0",
+    "microbundle": "^0.4.4",
+    "webpack": "^4.14.0"
+  }
+}
