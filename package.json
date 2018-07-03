@@ -1,6 +1,6 @@
 {
   "name": "mchine",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "A Simple State Machine",
   "main": "dist/index.js",
   "module": "dist/index.m.js",
