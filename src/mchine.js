@@ -24,7 +24,7 @@ const mchine = (stateMachine: StateMachine, initialState: ?string): MChine => {
 
     const machine = {
         dispatch(actionName: string, ...payload: Array<any>): any {
-            const currentState = machine.currentState;
+            const currentState = machine.currentState || {};
             const actions = currentState.actions || {};
 
             return Object.keys(actions)
@@ -37,7 +37,8 @@ const mchine = (stateMachine: StateMachine, initialState: ?string): MChine => {
             ]);
         },
         get currentState(): State {
-            return Object.assign({}, _statesHistory[_statesHistory.length - 1]);
+            const currentState = _statesHistory[_statesHistory.length - 1]
+            return currentState && Object.assign({}, currentState);
         },
         get history(): Array<State> {
             return _statesHistory.map(state => Object.assign({}, state));

@@ -10,7 +10,7 @@
     "build": "microbundle",
     "prepublishOnly": "npm run build",
     "release": "npm t && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish",
-    "test": "karmatic"
+    "test": "jest"
   },
   "files": [
     "src",
@@ -23,8 +23,12 @@
   "author": "HenriqueLimas",
   "license": "MIT",
   "devDependencies": {
-    "karmatic": "^1.2.0",
+    "babel-core": "^6.26.3",
+    "babel-jest": "^23.2.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-flow": "^6.23.0",
+    "jest": "^23.2.0",
     "microbundle": "^0.4.4",
-    "webpack": "^4.14.0"
+    "regenerator-runtime": "^0.12.0"
   }
 }
