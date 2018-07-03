@@ -8,6 +8,7 @@
   "repository": "HenriqueLimas/mchine",
   "scripts": {
     "build": "microbundle",
+    "lint": "eslint src/*.js",
     "prepublishOnly": "npm run build",
     "release": "npm t && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish",
     "test": "jest"
@@ -24,11 +25,18 @@
   "license": "MIT",
   "devDependencies": {
     "babel-core": "^6.26.3",
+    "babel-eslint": "^8.2.5",
     "babel-jest": "^23.2.0",
     "babel-preset-env": "^1.7.0",
     "babel-preset-flow": "^6.23.0",
+    "eslint": "^5.0.1",
+    "eslint-config-google": "^0.9.1",
+    "eslint-plugin-flowtype": "^2.49.3",
+    "eslint-plugin-jest": "^21.17.0",
+    "eslint-plugin-prettier": "^2.6.1",
     "jest": "^23.2.0",
     "microbundle": "^0.4.4",
+    "prettier": "^1.13.7",
     "regenerator-runtime": "^0.12.0"
   }
 }

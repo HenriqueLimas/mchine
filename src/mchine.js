@@ -1,55 +1,58 @@
 // @flow
 
 interface State {
-    [string]: any;
-    actions: {
-        [string]: (...payload: any) => any
-    };
+  [string]: any;
+  actions: {
+    [string]: (...payload: any) => any
+  };
 }
 
 interface StateMachine {
-    [string]: State
+  [string]: State;
 }
 
 type TDispatch = (actionName: string, ...payload: Array<any>) => any;
 
 interface MChine {
-    dispatch: TDispatch;
-    changeStateTo(string): void;
-    getCurrentState(): StateMachine;
+  dispatch: TDispatch;
+  changeStateTo(string): void;
+  getCurrentState(): StateMachine;
 }
 
 const mchine = (stateMachine: StateMachine, initialState: ?string): MChine => {
-    let _statesHistory: Array<State> = [];
+  let _statesHistory: Array<State> = [];
 
-    const machine = {
-        dispatch(actionName: string, ...payload: Array<any>): any {
-            const currentState = machine.currentState || {};
-            const actions = currentState.actions || {};
+  const machine = {
+    dispatch(actionName: string, ...payload: Array<any>): any {
+      const currentState = machine.currentState || {};
+      const actions = currentState.actions || {};
 
-            return Object.keys(actions)
-                .filter(key => key === actionName)
-                .reduce((_, actionName) => actions[actionName](machine, ...payload), null);
-        },
-        changeStateTo(stateName: string) {
-            _statesHistory = _statesHistory.concat([
-                Object.assign({ __mchine_name__: stateName }, stateMachine[stateName])
-            ]);
-        },
-        get currentState(): State {
-            const currentState = _statesHistory[_statesHistory.length - 1]
-            return currentState && Object.assign({}, currentState);
-        },
-        get history(): Array<State> {
-            return _statesHistory.map(state => Object.assign({}, state));
-        },
-    };
+      return Object.keys(actions)
+        .filter((key) => key === actionName)
+        .reduce(
+          (_, actionName) => actions[actionName](machine, ...payload),
+          null
+        );
+    },
+    changeStateTo(stateName: string) {
+      _statesHistory = _statesHistory.concat([
+        Object.assign({__mchine_name__: stateName}, stateMachine[stateName]),
+      ]);
+    },
+    get currentState(): State {
+      const currentState = _statesHistory[_statesHistory.length - 1];
+      return currentState && Object.assign({}, currentState);
+    },
+    get history(): Array<State> {
+      return _statesHistory.map((state) => Object.assign({}, state));
+    },
+  };
 
-    if (initialState) {
-        machine.changeStateTo(initialState)
-    }
+  if (initialState) {
+    machine.changeStateTo(initialState);
+  }
 
-    return machine;
+  return machine;
 };
 
 export default mchine;

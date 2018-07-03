@@ -1,0 +1,44 @@
+{
+    "extends": ["google", "plugin:flowtype/recommended"],
+    "root": true,
+
+    "env": {
+        "es6": true,
+        "jest": true
+    },
+
+    "parser": "babel-eslint",
+
+    "parserOptions": {
+        "sourceType": "module"
+    },
+
+    "plugins": [
+        "flowtype",
+        "prettier",
+        "jest"
+    ],
+
+    "globals": {
+        "jest": true
+    },
+
+    "rules": {
+      // Flow Plugin
+      // The following rules are made available via `eslint-plugin-flowtype`
+        "flowtype/define-flow-type": 1,
+        "flowtype/use-flow-type": 1,
+
+      // Jest Plugin
+      // The following rules are made available via `eslint-plugin-jest`.
+        "jest/no-disabled-tests": 1,
+        "jest/no-focused-tests": 1,
+        "jest/no-identical-title": 1,
+        "jest/valid-expect": 1,
+
+      // Prettier Plugin
+      // The following rules are made available via `eslint-plugin-prettier`.
+        "prettier/prettier": "error"
+    }
+}
+
