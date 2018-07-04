@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>MChine</title>
+</head>
+
+<body>
+  <form class="js-form">
+    <input type="email" name="email">
+    <input type="password" name="password">
+
+    <button class="js-submit" type="submit">Login</button>
+  </form>
+
+  <script src="./node_modules/morphdom/dist/morphdom-umd.js"></script>
+  <script type="module">
+    import mchine from './node_modules/mchine/dist/index.m.js';
+    import stateMachine from './stateMachine.m.js';
+
+    const machine = mchine(stateMachine, 'idle');
+    const changeStateTo = machine.changeStateTo
+
+    machine.changeStateTo = (name, ...payload) => {
+      changeStateTo(name, ...payload)
+      const currentState = machine.currentState
+      const components = currentState.components || {}
+
+      morphdom(form, `<form class="js-form">
+            <input type="email"
+                  name="email"
+                  ${components.email && components.email.disabled ? 'disabled' : ''}
+                  value=${form.elements.email.value}>
+
+            <input type="password"
+                  name="password"
+                  ${components.email && components.password.disabled ? 'disabled' : ''}
+                  value=${form.elements.password.value}>
+
+            <button ${components.login && components.login.disabled ? 'disabled' : ''} class="js-submit" type="submit">Login</button>
+
+            ${(components.error && components.error.visible) ? '<span>Error</span>' : ''}
+            ${(components.loading ? `<span>Loading...</span>` : '')}
+          </form>`)
+    }
+
+    const form = document.querySelector('.js-form')
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const form = event.target;
+
+      const { email, password } = form.elements;
+
+      machine.dispatch('login', email, password)
+    })
+  </script>
+</body>
+
+</html>
