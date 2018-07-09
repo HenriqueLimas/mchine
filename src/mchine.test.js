@@ -90,13 +90,11 @@ describe("mchine", () => {
             initial: 'on',
             states: {
               on: {
-                value: 'on',
                 actions: {
                   toggle: m => m.changeStateTo('italic.off')
                 }
               },
               off: {
-                value: 'off',
                 actions: {
                   toggle: m => m.changeStateTo('italic.on')
                 }
@@ -107,11 +105,18 @@ describe("mchine", () => {
       };
     });
 
-    it("should return start all the states", () => {
+    it("should return all the states", () => {
       const m = mchine(stateMachine);
 
       expect(Object.keys(m.currentState)).toEqual(['bold', 'italic']);
-      console.log(m.currentState)
+
+      expect(m.currentState.bold.name).toBe('bold.on')
+      expect(m.currentState.bold.parent).toBe('bold')
+      expect(m.currentState.bold.actions).toEqual(stateMachine.states.bold.states.on.actions)
+
+      expect(m.currentState.italic.name).toBe('italic.on')
+      expect(m.currentState.italic.parent).toBe('italic')
+      expect(m.currentState.italic.actions).toEqual(stateMachine.states.italic.states.on.actions)
     });
   });
 });

@@ -17,7 +17,7 @@ type StateMachine = {
   initial?: string,
   parallel?: boolean,
   states: {
-    [string]: State
+    [string]: State | StateMachine
   }
 };
 
@@ -32,6 +32,9 @@ interface MChine {
 const _get = (target, path) =>
   path.split('.')
     .reduce((target, key) => target && target[key], target)
+
+const getState = (stateMachine: StateMachine, path: string) =>
+  _get(stateMachine, path.split('.').join('.states.'))
 
 const mchine = (stateMachine: StateMachine): MChine => {
   let _statesHistory: Array<Statechart> = [];
@@ -78,9 +81,10 @@ const createState = (stateMachine: StateMachine) => (
 ): State =>
   Object.assign(
     {
-      __mchine_name__: stateName.split('.')[0]
+      name: stateName,
+      parent: stateName.split('.')[0],
     },
-    _get(stateMachine.states, stateName)
+    getState(stateMachine.states, stateName)
   );
 
 const initialState = (
@@ -110,7 +114,7 @@ const stateOrParallel = (machine: MChine, stateMachine: StateMachine) => (
   state: State
 ): Statechart =>
   stateMachine.parallel
-    ? Object.assign({}, machine.getCurrentState(), { [state.__mchine_name__]: state })
+    ? Object.assign({}, machine.getCurrentState(), { [state.parent]: state })
     : state;
 
 export default mchine;
