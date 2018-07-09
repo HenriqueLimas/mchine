@@ -2,7 +2,7 @@
 
 type State = {
   [string]: any,
-  actions: {
+  events: {
     [string]: (...payload: any) => any
   }
 };
@@ -21,10 +21,10 @@ type StateMachine = {
   }
 };
 
-type TDispatch = (actionName: string, ...payload: Array<any>) => any;
+type TTransition = (state: State | string, actionName: string, ...payload: Array<any>) => any;
 
 interface MChine {
-  dispatch: TDispatch;
+  transition: TTransition;
   changeStateTo(string): void;
   getCurrentState(): Statechart;
 }
@@ -34,21 +34,21 @@ const _get = (target, path) =>
     .reduce((target, key) => target && target[key], target)
 
 const getState = (stateMachine: StateMachine, path: string) =>
-  _get(stateMachine, path.split('.').join('.states.'))
+  _get(stateMachine.states, path.split('.').join('.states.'))
 
 const mchine = (stateMachine: StateMachine): MChine => {
   let _statesHistory: Array<Statechart> = [];
   const states = stateMachine.states;
 
-  const machine = {
-    dispatch(actionName: string, ...payload: Array<any>): any {
-      const currentState = machine.currentState || {};
-      const actions = currentState.actions || {};
+  const machine: MChine = {
+    transition(state: State | string, actionName: string, ...payload: Array<any>): any {
+      const currentState =  (typeof state === 'string' ? getState(stateMachine, state) : state) || {};
+      const events = currentState.events || {};
 
-      return Object.keys(actions)
+      return Object.keys(events)
         .filter(key => key === actionName)
         .reduce(
-          (_, actionName) => actions[actionName](machine, ...payload),
+          (_, actionName) => events[actionName](machine, ...payload),
           null
         );
     },
@@ -84,7 +84,7 @@ const createState = (stateMachine: StateMachine) => (
       name: stateName,
       parent: stateName.split('.')[0],
     },
-    getState(stateMachine.states, stateName)
+    getState(stateMachine, stateName)
   );
 
 const initialState = (
