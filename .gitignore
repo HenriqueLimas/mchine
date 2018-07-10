@@ -5,3 +5,4 @@ build
 package-lock.json
 *.log
 *.swp
+.rpt2_cache

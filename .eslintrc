@@ -1,5 +1,5 @@
 {
-    "extends": ["google", "plugin:flowtype/recommended"],
+    "extends": ["google"],
     "root": true,
 
     "env": {
@@ -14,7 +14,7 @@
     },
 
     "plugins": [
-        "flowtype",
+        "typescript",
         "prettier",
         "jest"
     ],
@@ -24,11 +24,6 @@
     },
 
     "rules": {
-      // Flow Plugin
-      // The following rules are made available via `eslint-plugin-flowtype`
-        "flowtype/define-flow-type": 1,
-        "flowtype/use-flow-type": 1,
-
       // Jest Plugin
       // The following rules are made available via `eslint-plugin-jest`.
         "jest/no-disabled-tests": 1,

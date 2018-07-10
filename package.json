@@ -4,10 +4,11 @@
   "description": "A Simple State Machine",
   "main": "dist/index.js",
   "module": "dist/index.m.js",
-  "source": "src/index.js",
+  "source": "src/index.ts",
   "repository": "HenriqueLimas/mchine",
   "scripts": {
     "build": "microbundle",
+    "dev": "microbundle watch",
     "lint": "eslint src/*.js",
     "prepublishOnly": "npm run build",
     "release": "npm t && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish",
@@ -24,6 +25,7 @@
   "author": "HenriqueLimas",
   "license": "MIT",
   "devDependencies": {
+    "@types/jest": "^23.1.5",
     "babel-core": "^6.26.3",
     "babel-eslint": "^8.2.5",
     "babel-jest": "^23.2.0",
@@ -31,12 +33,27 @@
     "babel-preset-flow": "^6.23.0",
     "eslint": "^5.0.1",
     "eslint-config-google": "^0.9.1",
-    "eslint-plugin-flowtype": "^2.49.3",
     "eslint-plugin-jest": "^21.17.0",
     "eslint-plugin-prettier": "^2.6.1",
+    "eslint-plugin-typescript": "^0.12.0",
     "jest": "^23.2.0",
     "microbundle": "^0.4.4",
     "prettier": "^1.13.7",
-    "regenerator-runtime": "^0.12.0"
+    "regenerator-runtime": "^0.12.0",
+    "ts-jest": "^23.0.0",
+    "typescript-eslint-parser": "^16.0.1"
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "ts",
+      "js",
+      "json",
+      "node"
+    ],
+    "transform": {
+      "^.+\\.(ts|tsx)$": "ts-jest"
+    },
+    "testMatch": ["**/?(*.)+(test).ts"],
+    "testPathIgnorePatterns": ["/node_modules/"]
   }
 }
