@@ -10,7 +10,6 @@ export type PseudoState = InitialState;
 // AtomicState a leaf state without no children
 export type AtomicState = {
   id: StateID;
-  initial: InitialState;
   parentId: StateID;
 };
 
