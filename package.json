@@ -53,7 +53,11 @@
     "transform": {
       "^.+\\.(ts|tsx)$": "ts-jest"
     },
-    "testMatch": ["**/?(*.)+(test).ts"],
-    "testPathIgnorePatterns": ["/node_modules/"]
+    "testMatch": [
+      "**/?(*.)+(test).ts"
+    ],
+    "testPathIgnorePatterns": [
+      "/node_modules/"
+    ]
   }
 }
