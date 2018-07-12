@@ -1,4 +1,4 @@
-import { CompoundState, State, AtomicState } from './types';
+import {CompoundState, State, AtomicState} from './types';
 
 // isCompoundState check if the state has child(ren)
 export function isCompoundState(state: State): state is CompoundState {

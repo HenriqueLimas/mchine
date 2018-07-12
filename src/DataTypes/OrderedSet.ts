@@ -1,5 +1,5 @@
-import { predicate } from './types';
-import { List } from "./List";
+import {predicate} from './types';
+import {List} from './List';
 
 export class OrderedSet<T> {
   private set: Set<T>;

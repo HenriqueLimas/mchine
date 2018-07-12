@@ -9,7 +9,7 @@
   "scripts": {
     "build": "microbundle",
     "dev": "microbundle watch",
-    "lint": "eslint src/*.js",
+    "lint": "eslint src/**/*.ts",
     "prepublishOnly": "npm run build",
     "release": "npm t && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish",
     "test": "jest"

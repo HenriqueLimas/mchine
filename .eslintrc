@@ -7,7 +7,7 @@
         "jest": true
     },
 
-    "parser": "babel-eslint",
+    "parser": "typescript-eslint-parser",
 
     "parserOptions": {
         "sourceType": "module"
@@ -29,11 +29,7 @@
         "jest/no-disabled-tests": 1,
         "jest/no-focused-tests": 1,
         "jest/no-identical-title": 1,
-        "jest/valid-expect": 1,
-
-      // Prettier Plugin
-      // The following rules are made available via `eslint-plugin-prettier`.
-        "prettier/prettier": "error"
+        "jest/valid-expect": 1
     }
 }
 

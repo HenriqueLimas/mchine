@@ -1,4 +1,4 @@
-import { predicate, compare } from './types';
+import {predicate, compare} from './types';
 
 export class List<T> {
   list: T[];

@@ -1,4 +1,4 @@
-import { StateID } from '../State/types';
+import {StateID} from '../State/types';
 
 // Event is what triggers the transition (currently a simple string)
 export type Event = string;
