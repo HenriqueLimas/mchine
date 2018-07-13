@@ -4,5 +4,5 @@ export type ExternalData = any;
 
 export type EventSchema = {
   target: string;
-  cond: Cond[];
+  cond?: Cond[];
 };

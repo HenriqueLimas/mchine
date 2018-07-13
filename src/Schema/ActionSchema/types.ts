@@ -10,6 +10,6 @@ export type ActionSchemaObject = {
 export type ActionSchemaFunction = ((data: ExternalData, event: Event) => void);
 
 export type ActionSchema =
-  | ActionSchemaString
-  | ActionSchemaObject
+  // | ActionSchemaString
+  // | ActionSchemaObject
   | ActionSchemaFunction;

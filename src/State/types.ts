@@ -1,3 +1,4 @@
+import {StateID} from './types';
 import {Action} from './../Action';
 import {Transition} from './../Transition';
 
@@ -22,13 +23,13 @@ export type AtomicState = {
 // StateNode a state with children
 export type StateNode = AtomicState & {
   initial: InitialState;
-  states: Record<StateID, State>;
+  states: Record<string, StateID>;
 };
 
 // ParallelState a state with multiple states value at the same time
 export type ParallelState = AtomicState & {
   parallel: boolean;
-  states: Record<StateID, State>;
+  states: Record<string, StateID>;
 };
 
 // State represents the differnt types of states
@@ -36,3 +37,5 @@ export type CompoundState = StateNode | ParallelState;
 
 // State represents the differnt types of states
 export type State = StateNode | ParallelState | AtomicState;
+
+export type StateHash = Record<StateID, State>;
