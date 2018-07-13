@@ -1,4 +1,5 @@
-import {StateID} from '../State/types';
+import { Cond } from './../Schema/TransitionSchema';
+import {StateID} from '../State';
 
 // Event is what triggers the transition (currently a simple string)
 export type Event = string;
@@ -6,6 +7,7 @@ export type Event = string;
 // Transition between states triggered by events
 export type Transition = {
   event: Event[];
-  target: StateID;
+  target: StateID[];
   source: StateID;
+  cond: Cond[];
 };

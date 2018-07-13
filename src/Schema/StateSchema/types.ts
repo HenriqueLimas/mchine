@@ -1,5 +1,5 @@
-import { ActionSchema } from './../ActionSchema';
-import { EventSchema } from '../TransitionSchema';
+import {ActionSchema} from './../ActionSchema';
+import {EventSchema} from '../TransitionSchema';
 
 export type AtomicStateSchema = {
   onEntry?: ActionSchema[];

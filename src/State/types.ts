@@ -1,3 +1,6 @@
+import {Action} from './../Action';
+import {Transition} from './../Transition';
+
 // StateID represent the id of the state
 export type StateID = string;
 
@@ -11,20 +14,21 @@ export type PseudoState = InitialState;
 export type AtomicState = {
   id: StateID;
   parentId: StateID;
+  transitions: Transition[];
+  onEntry: Action[];
+  onExit: Action[];
 };
 
 // StateNode a state with children
-export type StateNode = {
-  id: StateID;
+export type StateNode = AtomicState & {
   initial: InitialState;
-  states: Record<string, State>;
+  states: Record<StateID, State>;
 };
 
 // ParallelState a state with multiple states value at the same time
-export type ParallelState = {
-  id: StateID;
+export type ParallelState = AtomicState & {
   parallel: boolean;
-  states: Record<string, State>;
+  states: Record<StateID, State>;
 };
 
 // State represents the differnt types of states
