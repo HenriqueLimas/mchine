@@ -194,6 +194,118 @@ describe('schemaToState()', () => {
         },
       },
     },
+
+    {
+      name: 'should return a hash of the parallel states',
+      args: {
+        stateMachineSchema: {
+          parallel: true,
+          states: {
+            bold: {
+              initial: 'internalBoldState',
+              events: {
+                fetch: {
+                  target: 'loading',
+                },
+              },
+              states: {
+                internalBoldState: {
+                  events: {
+                    doNothing: {
+                      target: 'bold',
+                    },
+                  },
+                },
+              },
+            },
+            font: {
+              initial: 'internalFontState',
+              events: {
+                fetch: {
+                  target: 'loading',
+                },
+              },
+              states: {
+                internalFontState: {
+                  events: {
+                    doNothing: {
+                      target: 'font',
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      want: {
+        'bold': {
+          id: 'bold',
+          initial: 'bold.internalBoldState',
+          parentId: null,
+          transitions: [
+            {
+              target: ['loading'],
+              source: 'bold',
+              events: ['fetch'],
+              cond: [],
+            },
+          ],
+          states: {
+            'bold.internalBoldState': 'bold.internalBoldState',
+          },
+          onEntry: [],
+          onExit: [],
+        },
+        'bold.internalBoldState': {
+          id: 'bold.internalBoldState',
+          parentId: 'bold',
+          transitions: [
+            {
+              target: ['bold'],
+              source: 'bold.internalBoldState',
+              events: ['doNothing'],
+              cond: [],
+            },
+          ],
+          onEntry: [],
+          onExit: [],
+        },
+
+        'font': {
+          id: 'font',
+          initial: 'font.internalFontState',
+          parentId: null,
+          transitions: [
+            {
+              target: ['loading'],
+              source: 'font',
+              events: ['fetch'],
+              cond: [],
+            },
+          ],
+          states: {
+            'font.internalFontState': 'font.internalFontState',
+          },
+          onEntry: [],
+          onExit: [],
+        },
+        'font.internalFontState': {
+          id: 'font.internalFontState',
+          parentId: 'font',
+          transitions: [
+            {
+              target: ['font'],
+              source: 'font.internalFontState',
+              events: ['doNothing'],
+              cond: [],
+            },
+          ],
+          onEntry: [],
+          onExit: [],
+        },
+      },
+    },
   ];
 
   tests.forEach((tt) => {
