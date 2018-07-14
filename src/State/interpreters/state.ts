@@ -6,6 +6,7 @@ import {
   StateSchema,
 } from '../../Schema/StateSchema';
 import {NewTransactionFromEventSchema} from './transaction';
+import {ConcatStateIDs} from '../state';
 
 export function NewStateFromSchema(
   stateSchema: StateSchema,
@@ -24,14 +25,20 @@ export function NewStateFromSchema(
     ).reduce(
       (states, childStateId) => ({
         ...states,
-        [`${state.id}.${childStateId}`]: `${state.id}.${childStateId}`,
+        [ConcatStateIDs(state.id, childStateId)]: ConcatStateIDs(
+          state.id,
+          childStateId
+        ),
       }),
       {}
     );
     if (isParallelStateSchema(stateSchema)) {
       (<ParallelState>state).parallel = true;
     } else {
-      (<StateNode>state).initial = `${state.id}.${stateSchema.initial}`;
+      (<StateNode>state).initial = ConcatStateIDs(
+        state.id,
+        stateSchema.initial
+      );
     }
   }
   if (stateSchema.events) {

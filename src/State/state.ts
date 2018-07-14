@@ -4,6 +4,10 @@ import {StateID} from './types';
 export function GetParentStateID(stateId: StateID): StateID {
   const arrayPath = stateId.split(CHILD_DELIMITER);
   return (
-    arrayPath.splice(0, arrayPath.length - 1).join(CHILD_DELIMITER) || null
+    ConcatStateIDs(...arrayPath.splice(0, arrayPath.length - 1)) || null
   );
+}
+
+export function ConcatStateIDs(...stateIDs: StateID[]): StateID {
+  return stateIDs.join(CHILD_DELIMITER);
 }

@@ -1,5 +1,4 @@
-import {CHILD_DELIMITER} from './../../constants';
-import {GetParentStateID} from '../state';
+import {GetParentStateID, ConcatStateIDs} from '../state';
 import {Queue} from '../../DataTypes/Queue';
 import {
   CompoundStateSchema,
@@ -29,7 +28,7 @@ export function NewStateHashFromSchema(
 
     if (isCompoundStateSchema(currentStateSchema)) {
       Object.keys((<CompoundStateSchema>currentStateSchema).states)
-        .map((stateId) => `${current}${CHILD_DELIMITER}${stateId}`)
+        .map((stateId) => ConcatStateIDs(current, stateId))
         .forEach(queue.enqueue.bind(queue));
     }
   }
