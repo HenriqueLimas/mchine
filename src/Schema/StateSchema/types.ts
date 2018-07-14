@@ -9,12 +9,12 @@ export type AtomicStateSchema = {
 
 export type StateNodeSchema = AtomicStateSchema & {
   initial: string;
-  states: Record<string, CompoundStateSchema>;
+  states: StateMapSchema;
 };
 
 export type ParallelStateSchema = AtomicStateSchema & {
   parallel: boolean;
-  states: Record<string, CompoundStateSchema>;
+  states: StateMapSchema;
 };
 
 export type CompoundStateSchema = StateNodeSchema | ParallelStateSchema;
