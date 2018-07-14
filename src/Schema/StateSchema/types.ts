@@ -19,14 +19,14 @@ export type ParallelStateSchema = AtomicStateSchema & {
 
 export type CompoundStateSchema = StateNodeSchema | ParallelStateSchema;
 export type StateSchema = AtomicStateSchema | CompoundStateSchema;
+export type StateMapSchema = {
+  [state: string]: StateSchema;
+};
 
 export type RootSchema = {
   initial?: string;
   parallel?: boolean;
-
-  states: {
-    [state: string]: StateSchema;
-  };
+  states: StateMapSchema;
 };
 
 export type StateMachineSchema = RootSchema;
