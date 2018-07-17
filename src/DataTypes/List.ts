@@ -15,9 +15,26 @@ export class List<T> {
     return this.list[this.list.length - 1];
   }
 
+  size(): number {
+    return this.list.length;
+  }
+
+  isEmpty(): boolean {
+    return !this.size();
+  }
+
+  forEach(callback: ((item: T) => void)): List<T> {
+    this.list.forEach(callback);
+    return this;
+  }
+
   append(elem: T): List<T> {
     this.list.push(elem);
     return this;
+  }
+
+  concat(external: List<T>): List<T> {
+    return new List<T>(this.list.concat(external.list));
   }
 
   filter(predicate: predicate<T>): List<T> {

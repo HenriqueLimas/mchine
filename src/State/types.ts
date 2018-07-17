@@ -1,3 +1,4 @@
+import {OrderedSet} from './../DataTypes/OrderedSet';
 import {StateID} from './types';
 import {Action} from './../Action';
 import {Transition} from './../Transition';
@@ -37,5 +38,7 @@ export type CompoundState = StateNode | ParallelState;
 
 // State represents the differnt types of states
 export type State = StateNode | ParallelState | AtomicState;
+
+export type StateSet = OrderedSet<State>;
 
 export type StateHash = Record<StateID, State>;
