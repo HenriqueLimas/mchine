@@ -17,7 +17,7 @@ describe('getCurrentState()', () => {
       name: 'should return simple states',
       fields: {
         configuration: ['idle'],
-        stateMachine: {states: {idle: {}}},
+        stateMachine: {initial: 'idle', states: {idle: {}}},
       },
       want: 'idle',
     },
@@ -26,6 +26,7 @@ describe('getCurrentState()', () => {
       fields: {
         configuration: ['idle', 'idle.children'],
         stateMachine: {
+          initial: 'idle',
           states: {
             idle: {
               initial: 'children',
@@ -43,6 +44,7 @@ describe('getCurrentState()', () => {
       fields: {
         configuration: ['idle', 'idle.children', 'idle.children.grandchildren'],
         stateMachine: {
+          initial: 'idle',
           states: {
             idle: {
               initial: 'children',
@@ -71,6 +73,7 @@ describe('getCurrentState()', () => {
           'idle.brother.grandBrotherChildren',
         ],
         stateMachine: {
+          initial: 'idle',
           states: {
             idle: {
               parallel: true,

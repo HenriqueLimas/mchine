@@ -2,24 +2,30 @@ import {CHILD_DELIMITER} from './../constants';
 import {isParallelStateSchema} from '../Schema/StateSchema';
 import {List} from '../DataTypes/List';
 import {NewStateHashFromSchema} from '../State/interpreters/stateHash';
-import {NewTransition} from '../Transition/transition';
+import {
+  NewTransition,
+  GetTransitionDomain,
+  GetEffectiveTargetStates,
+} from '../Transition/transition';
 import {OrderedSet} from './../DataTypes/OrderedSet';
-import {Queue} from './../DataTypes/Queue';
 import {StateHash, StateID} from './../State/types';
 import {StateMachineSchema} from './../Schema/StateSchema/types';
 import {Transition} from './../Transition/types';
-import {isAtomicState} from '../State/typeGards';
+import {
+  isAtomicState,
+  isCompoundState,
+  isParallelState,
+} from '../State/typeGards';
+import {IsDescendant, GetProperAncestors} from '../State/state';
 
 export class StateMachine {
   private configuration: OrderedSet<StateID>;
   private statesToInvoke: OrderedSet<StateID>;
-  private internalQueue: Queue<StateID>;
   private stateHash: StateHash;
 
   constructor(stateMachineSchema: StateMachineSchema) {
     this.configuration = new OrderedSet<StateID>();
     this.statesToInvoke = new OrderedSet<StateID>();
-    this.internalQueue = new Queue<StateID>();
     this.stateHash = NewStateHashFromSchema(stateMachineSchema);
 
     this.enterInitialStates(stateMachineSchema);
@@ -46,6 +52,17 @@ export class StateMachine {
     const statesForDefaultEntry = new OrderedSet<StateID>();
 
     // TODO: Initialize history here
+
+    this.computeEntrySet(
+      enabledTransitions,
+      statesToEnter,
+      statesForDefaultEntry
+    );
+
+    statesToEnter.toList().forEach((stateID: StateID) => {
+      this.configuration.add(stateID);
+      this.statesToInvoke.add(stateID);
+    });
   }
 
   private computeEntrySet(
@@ -61,6 +78,19 @@ export class StateMachine {
           statesForDefaultEntry
         );
       });
+
+      const ancestor = GetTransitionDomain(this.stateHash, transition);
+
+      GetEffectiveTargetStates(this.stateHash, transition)
+        .toList()
+        .forEach((stateID: StateID) => {
+          this.addAncestorStateToEnter(
+            stateID,
+            ancestor,
+            statesToEnter,
+            statesForDefaultEntry
+          );
+        });
     });
   }
 
@@ -68,7 +98,67 @@ export class StateMachine {
     stateID: StateID,
     statesToEnter: OrderedSet<StateID>,
     statesForDefaultEntry: OrderedSet<StateID>
-  ) {}
+  ) {
+    statesToEnter.add(stateID);
+
+    const state = this.stateHash[stateID];
+    if (isCompoundState(state) && !isParallelState(state)) {
+      statesForDefaultEntry.add(stateID);
+      this.addDescendantStatesToEnter(
+        state.initial,
+        statesToEnter,
+        statesForDefaultEntry
+      );
+    } else if (isParallelState(state)) {
+      Object.keys(state.states)
+        .filter(
+          (childID: StateID) =>
+            !statesToEnter.some((stateToEnterID: StateID) =>
+              IsDescendant(stateToEnterID, childID)
+            )
+        )
+        .forEach((childID: StateID) =>
+          this.addAncestorStateToEnter(
+            childID,
+            stateID,
+            statesToEnter,
+            statesForDefaultEntry
+          )
+        );
+    }
+  }
+
+  private addAncestorStateToEnter(
+    stateID: StateID,
+    ancestor: StateID,
+    statesToEnter: OrderedSet<StateID>,
+    statesForDefaultEntry: OrderedSet<StateID>
+  ) {
+    const ancestors = GetProperAncestors(stateID, ancestor);
+
+    ancestors.toList().forEach((anc) => {
+      statesToEnter.add(anc);
+
+      const ancestorState = this.stateHash[anc];
+
+      if (isParallelState(ancestorState)) {
+        Object.keys(ancestorState.states)
+          .filter(
+            (childID: StateID) =>
+              !statesToEnter.some((stateToEnterID: StateID) =>
+                IsDescendant(stateToEnterID, childID)
+              )
+          )
+          .forEach((childID: StateID) =>
+            this.addDescendantStatesToEnter(
+              childID,
+              statesToEnter,
+              statesForDefaultEntry
+            )
+          );
+      }
+    });
+  }
 
   // Used only for testing
   __setConfiguration__(stateIDs: StateID[]) {
