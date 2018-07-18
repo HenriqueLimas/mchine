@@ -11,8 +11,8 @@ export class List<T> {
     return this.list[0];
   }
 
-  tail(): T {
-    return this.list[this.list.length - 1];
+  tail(): List<T> {
+    return new List(this.list.slice(1));
   }
 
   size(): number {
