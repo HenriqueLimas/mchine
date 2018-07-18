@@ -28,6 +28,10 @@ export class List<T> {
     return this;
   }
 
+  map<J>(callback: ((item: T) => J)): List<J> {
+    return new List(this.list.map<J>(callback));
+  }
+
   append(elem: T): List<T> {
     this.list.push(elem);
     return this;
