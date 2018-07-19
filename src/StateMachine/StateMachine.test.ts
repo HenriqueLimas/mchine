@@ -1,5 +1,4 @@
 import {StateMachineSchema} from './../Schema/StateSchema/types';
-import {StateID} from '../State/types';
 import {StateMachine} from './StateMachine';
 
 describe('getCurrentState()', () => {

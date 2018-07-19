@@ -5,10 +5,10 @@ import {
   isParallelStateSchema,
   StateSchema,
 } from '../../Schema/StateSchema';
-import {NewTransactionFromEventSchema} from './transaction';
-import {ConcatStateIDs} from '../state';
+import {newTransactionFromEventSchema} from './transaction';
+import {concatStateIDs} from '../state';
 
-export function NewStateFromSchema(
+export function newStateFromSchema(
   stateSchema: StateSchema,
   partialState: Partial<State>
 ): State {
@@ -25,7 +25,7 @@ export function NewStateFromSchema(
     ).reduce(
       (states, childStateId) => ({
         ...states,
-        [ConcatStateIDs(state.id, childStateId)]: ConcatStateIDs(
+        [concatStateIDs(state.id, childStateId)]: concatStateIDs(
           state.id,
           childStateId
         ),
@@ -35,7 +35,7 @@ export function NewStateFromSchema(
     if (isParallelStateSchema(stateSchema)) {
       (<ParallelState>state).parallel = true;
     } else {
-      (<StateNode>state).initial = ConcatStateIDs(
+      (<StateNode>state).initial = concatStateIDs(
         state.id,
         stateSchema.initial
       );
@@ -44,7 +44,7 @@ export function NewStateFromSchema(
   if (stateSchema.events) {
     state.transitions = Object.keys(stateSchema.events).map((eventName) => {
       const eventSchema = stateSchema.events[eventName];
-      return NewTransactionFromEventSchema(stateSchema.events[eventName], {
+      return newTransactionFromEventSchema(stateSchema.events[eventName], {
         events: [eventName],
         source: state.id,
         target: [eventSchema.target],

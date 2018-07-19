@@ -1,11 +1,10 @@
 import {CHILD_DELIMITER} from './../constants';
-import {isParallelStateSchema} from '../Schema/StateSchema';
 import {List} from '../DataTypes/List';
-import {NewStateHashFromSchema} from '../State/interpreters/stateHash';
+import {newStateHashFromSchema} from '../State/interpreters/stateHash';
 import {
-  NewTransition,
-  GetTransitionDomain,
-  GetEffectiveTargetStates,
+  newTransition,
+  getTransitionDomain,
+  getEffectiveTargetStates,
 } from '../Transition/transition';
 import {OrderedSet} from './../DataTypes/OrderedSet';
 import {StateHash, StateID} from './../State/types';
@@ -16,7 +15,7 @@ import {
   isCompoundState,
   isParallelState,
 } from '../State/typeGards';
-import {IsDescendant, GetProperAncestors} from '../State/state';
+import {isDescendant, getProperAncestors} from '../State/state';
 
 export class StateMachine {
   private configuration: OrderedSet<StateID>;
@@ -26,11 +25,11 @@ export class StateMachine {
   constructor(stateMachineSchema: StateMachineSchema) {
     this.configuration = new OrderedSet<StateID>();
     this.statesToInvoke = new OrderedSet<StateID>();
-    this.stateHash = NewStateHashFromSchema(stateMachineSchema);
+    this.stateHash = newStateHashFromSchema(stateMachineSchema);
 
     this.enterStates(
       new List<Transition>([
-        NewTransition({target: [stateMachineSchema.initial]}),
+        newTransition({target: [stateMachineSchema.initial]}),
       ])
     );
   }
@@ -67,9 +66,9 @@ export class StateMachine {
         );
       });
 
-      const ancestor = GetTransitionDomain(this.stateHash, transition);
+      const ancestor = getTransitionDomain(this.stateHash, transition);
 
-      GetEffectiveTargetStates(this.stateHash, transition)
+      getEffectiveTargetStates(this.stateHash, transition)
         .toList()
         .forEach((stateID: StateID) => {
           this.addAncestorStateToEnter(
@@ -109,7 +108,7 @@ export class StateMachine {
         .filter(
           (childID: StateID) =>
             !statesToEnter.some((stateToEnterID: StateID) =>
-              IsDescendant(stateToEnterID, childID)
+              isDescendant(stateToEnterID, childID)
             )
         )
         .forEach((childID: StateID) => {
@@ -128,7 +127,7 @@ export class StateMachine {
     statesToEnter: OrderedSet<StateID>,
     statesForDefaultEntry: OrderedSet<StateID>
   ) {
-    const ancestors = GetProperAncestors(stateID, ancestor);
+    const ancestors = getProperAncestors(stateID, ancestor);
 
     ancestors.toList().forEach((anc) => {
       statesToEnter.add(anc);
@@ -140,7 +139,7 @@ export class StateMachine {
           .filter(
             (childID: StateID) =>
               !statesToEnter.some((stateToEnterID: StateID) =>
-                IsDescendant(stateToEnterID, childID)
+                isDescendant(stateToEnterID, childID)
               )
           )
           .forEach((childID: StateID) =>

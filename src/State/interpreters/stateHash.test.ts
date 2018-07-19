@@ -1,6 +1,6 @@
 import {StateHash} from '../types';
 import {StateMachineSchema} from '../../Schema/StateSchema';
-import {NewStateHashFromSchema} from './stateHash';
+import {newStateHashFromSchema} from './stateHash';
 
 describe('schemaToState()', () => {
   type args = {
@@ -310,7 +310,7 @@ describe('schemaToState()', () => {
 
   tests.forEach((tt) => {
     it(tt.name, () => {
-      expect(NewStateHashFromSchema(tt.args.stateMachineSchema)).toEqual(
+      expect(newStateHashFromSchema(tt.args.stateMachineSchema)).toEqual(
         tt.want
       );
     });

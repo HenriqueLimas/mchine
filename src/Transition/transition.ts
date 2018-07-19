@@ -3,9 +3,9 @@ import {StateID, StateHash} from './../State/types';
 import {Transition} from './types';
 import {List} from '../DataTypes/List';
 import {isCompoundState} from '../State';
-import {FindLCCA, IsDescendant} from '../State/state';
+import {findLCCA, isDescendant} from '../State/state';
 
-export function NewTransition(transition: Partial<Transition>): Transition {
+export function newTransition(transition: Partial<Transition>): Transition {
   return {
     target: transition.target || [],
     events: transition.events || [],
@@ -14,22 +14,22 @@ export function NewTransition(transition: Partial<Transition>): Transition {
   };
 }
 
-export function GetTransitionDomain(
+export function getTransitionDomain(
   stateHash: StateHash,
   transition: Transition
 ): StateID {
-  const tstates = GetEffectiveTargetStates(stateHash, transition);
+  const tstates = getEffectiveTargetStates(stateHash, transition);
 
   if (tstates.isEmpty()) {
     return null;
   } else if (
     transition.source &&
     isCompoundState(stateHash[transition.source]) &&
-    tstates.every((stateId) => IsDescendant(stateId, transition.source))
+    tstates.every((stateId) => isDescendant(stateId, transition.source))
   ) {
     return transition.source;
   } else {
-    return FindLCCA(
+    return findLCCA(
       stateHash,
       new List<StateID>([transition.source].filter(Boolean)).concat(
         tstates.toList()
@@ -38,7 +38,7 @@ export function GetTransitionDomain(
   }
 }
 
-export function GetEffectiveTargetStates(
+export function getEffectiveTargetStates(
   stateHash: StateHash,
   transition: Transition
 ): OrderedSet<StateID> {

@@ -1,7 +1,7 @@
 import {CHILD_DELIMITER} from './../../constants';
 import {StateSchema} from './../../Schema/StateSchema/types';
 import {State} from '../types';
-import {NewStateFromSchema} from './state';
+import {newStateFromSchema} from './state';
 describe('NewStateFromSchema()', () => {
   type args = {
     stateSchema: StateSchema;
@@ -72,7 +72,7 @@ describe('NewStateFromSchema()', () => {
   tests.forEach((tt) => {
     it(tt.name, () => {
       expect(
-        NewStateFromSchema(tt.args.stateSchema, tt.args.partialState)
+        newStateFromSchema(tt.args.stateSchema, tt.args.partialState)
       ).toEqual(tt.want);
     });
   });

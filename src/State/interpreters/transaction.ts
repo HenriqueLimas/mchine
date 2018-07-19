@@ -1,7 +1,7 @@
 import {EventSchema} from '../../Schema/TransitionSchema';
 import {Transition} from '../../Transition';
 
-export function NewTransactionFromEventSchema(
+export function newTransactionFromEventSchema(
   eventSchema: EventSchema,
   partialTransition: Partial<Transition>
 ): Transition {

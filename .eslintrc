@@ -1,35 +1,33 @@
 {
-    "extends": ["google"],
-    "root": true,
+  "extends": ["google"],
+  "root": true,
 
-    "env": {
-        "es6": true,
-        "jest": true
-    },
+  "env": {
+    "es6": true,
+    "jest": true
+  },
 
-    "parser": "typescript-eslint-parser",
+  "parser": "typescript-eslint-parser",
 
-    "parserOptions": {
-        "sourceType": "module"
-    },
+  "parserOptions": {
+    "sourceType": "module"
+  },
 
-    "plugins": [
-        "typescript",
-        "prettier",
-        "jest"
-    ],
+  "plugins": ["typescript", "prettier", "jest"],
 
-    "globals": {
-        "jest": true
-    },
+  "globals": {
+    "jest": true
+  },
 
-    "rules": {
-      // Jest Plugin
-      // The following rules are made available via `eslint-plugin-jest`.
-        "jest/no-disabled-tests": 1,
-        "jest/no-focused-tests": 1,
-        "jest/no-identical-title": 1,
-        "jest/valid-expect": 1
-    }
+  "rules": {
+    // Jest Plugin
+    // The following rules are made available via `eslint-plugin-jest`.
+    "jest/no-disabled-tests": 1,
+    "jest/no-focused-tests": 1,
+    "jest/no-identical-title": 1,
+    "jest/valid-expect": 1,
+
+    // Typescript
+    "typescript/no-unused-vars": 1
+  }
 }
-

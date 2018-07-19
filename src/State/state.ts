@@ -4,20 +4,20 @@ import {StateID, StateHash, State} from './types';
 import {List} from '../DataTypes/List';
 import {isCompoundState} from './typeGards';
 
-export function GetParentStateID(stateId: StateID): StateID {
+export function getParentStateID(stateId: StateID): StateID {
   const arrayPath = stateId.split(CHILD_DELIMITER);
-  return ConcatStateIDs(...arrayPath.splice(0, arrayPath.length - 1)) || null;
+  return concatStateIDs(...arrayPath.splice(0, arrayPath.length - 1)) || null;
 }
 
-export function ConcatStateIDs(...stateIDs: StateID[]): StateID {
+export function concatStateIDs(...stateIDs: StateID[]): StateID {
   return stateIDs.join(CHILD_DELIMITER);
 }
 
-export function FindLCCA(
+export function findLCCA(
   stateHash: StateHash,
   stateList: List<StateID>
 ): StateID {
-  const compoundAncestors: List<StateID> = GetProperAncestors(stateList.head())
+  const compoundAncestors: List<StateID> = getProperAncestors(stateList.head())
     .toList()
     .map<State>((stateID) => stateHash[stateID])
     .filter(isCompoundState)
@@ -25,7 +25,7 @@ export function FindLCCA(
 
   for (const anc of compoundAncestors.list) {
     if (
-      stateList.tail().every((stateID: StateID) => IsDescendant(stateID, anc))
+      stateList.tail().every((stateID: StateID) => isDescendant(stateID, anc))
     ) {
       return anc;
     }
@@ -34,7 +34,7 @@ export function FindLCCA(
   return stateList.head();
 }
 
-export function GetProperAncestors(
+export function getProperAncestors(
   state1: StateID,
   state2?: StateID
 ): OrderedSet<StateID> {
@@ -59,7 +59,7 @@ export function GetProperAncestors(
   return new OrderedSet<StateID>(ancestors);
 }
 
-export function IsDescendant(state1: StateID, state2: StateID): boolean {
+export function isDescendant(state1: StateID, state2: StateID): boolean {
   return state1.slice(0, state2.length + 1).replace(/\.$/, '') === state2;
 }
 

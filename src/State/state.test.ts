@@ -2,13 +2,13 @@ import {OrderedSet} from './../DataTypes/OrderedSet';
 import {CHILD_DELIMITER} from '../constants';
 import {StateID, StateHash} from './types';
 import {
-  ConcatStateIDs,
-  GetProperAncestors,
-  IsDescendant,
-  FindLCCA,
+  concatStateIDs,
+  getProperAncestors,
+  isDescendant,
+  findLCCA,
 } from './state';
 import {List} from '../DataTypes/List';
-import {NewStateFromSchema} from './interpreters/state';
+import {newStateFromSchema} from './interpreters/state';
 
 describe('ConcatStateIDs()', () => {
   type args = {
@@ -45,7 +45,7 @@ describe('ConcatStateIDs()', () => {
 
   tests.forEach((tt) => {
     it(tt.name, () => {
-      expect(ConcatStateIDs(...tt.args.stateIDs)).toBe(tt.want);
+      expect(concatStateIDs(...tt.args.stateIDs)).toBe(tt.want);
     });
   });
 });
@@ -87,7 +87,7 @@ describe('GetProperAncestors()', () => {
 
   tests.forEach((tt) => {
     it(tt.name, () => {
-      expect(GetProperAncestors(tt.args.state1, tt.args.state2)).toEqual(
+      expect(getProperAncestors(tt.args.state1, tt.args.state2)).toEqual(
         tt.want
       );
     });
@@ -128,7 +128,7 @@ describe('IsDescendant()', () => {
 
   tests.forEach((tt) => {
     it(tt.name, () => {
-      expect(IsDescendant(tt.args.state1, tt.args.state2)).toBe(tt.want);
+      expect(isDescendant(tt.args.state1, tt.args.state2)).toBe(tt.want);
     });
   });
 });
@@ -149,15 +149,15 @@ describe('FindLCCA()', () => {
         'should return the first compound ancestor of the state in the list',
       args: {
         stateHash: {
-          'parent': NewStateFromSchema(
+          'parent': newStateFromSchema(
             {initial: '', states: {}},
             {id: 'parent'}
           ),
-          'parent.child': NewStateFromSchema(
+          'parent.child': newStateFromSchema(
             {initial: '', states: {}},
             {id: 'parent.child'}
           ),
-          'parent.child.grandchild': NewStateFromSchema(
+          'parent.child.grandchild': newStateFromSchema(
             {},
             {id: 'parent.child.grandchild'}
           ),
@@ -172,15 +172,15 @@ describe('FindLCCA()', () => {
         'should return the first compound ancestor of all the state in the list',
       args: {
         stateHash: {
-          'parent': NewStateFromSchema(
+          'parent': newStateFromSchema(
             {initial: '', states: {}},
             {id: 'parent'}
           ),
-          'parent.child': NewStateFromSchema(
+          'parent.child': newStateFromSchema(
             {initial: '', states: {}},
             {id: 'parent.child'}
           ),
-          'parent.brother': NewStateFromSchema({}, {id: 'parent.brother'}),
+          'parent.brother': newStateFromSchema({}, {id: 'parent.brother'}),
         },
         stateList: new List<StateID>(['parent.child', 'parent.brother']),
       },
@@ -190,7 +190,7 @@ describe('FindLCCA()', () => {
 
   tests.forEach((tt) => {
     it(tt.name, () => {
-      expect(FindLCCA(tt.args.stateHash, tt.args.stateList)).toEqual(tt.want);
+      expect(findLCCA(tt.args.stateHash, tt.args.stateList)).toEqual(tt.want);
     });
   });
 });
