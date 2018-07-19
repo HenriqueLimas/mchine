@@ -28,26 +28,14 @@ export class StateMachine {
     this.statesToInvoke = new OrderedSet<StateID>();
     this.stateHash = NewStateHashFromSchema(stateMachineSchema);
 
-    this.enterInitialStates(stateMachineSchema);
+    this.enterStates(
+      new List<Transition>([
+        NewTransition({target: [stateMachineSchema.initial]}),
+      ])
+    );
   }
 
-  private enterInitialStates(stateMachineSchema: StateMachineSchema) {
-    const initialTransition = new List<Transition>();
-
-    if (isParallelStateSchema(stateMachineSchema)) {
-      Object.keys(stateMachineSchema.states).forEach((stateID) =>
-        initialTransition.append(NewTransition({target: [stateID]}))
-      );
-    } else {
-      initialTransition.append(
-        NewTransition({target: [stateMachineSchema.initial]})
-      );
-    }
-
-    this.enterStates(initialTransition);
-  }
-
-  private enterStates(enabledTransitions: List<Transition>) {
+  enterStates(enabledTransitions: List<Transition>) {
     const statesToEnter = new OrderedSet<StateID>();
     const statesForDefaultEntry = new OrderedSet<StateID>();
 
@@ -109,6 +97,13 @@ export class StateMachine {
         statesToEnter,
         statesForDefaultEntry
       );
+
+      this.addAncestorStateToEnter(
+        state.initial,
+        stateID,
+        statesToEnter,
+        statesForDefaultEntry
+      );
     } else if (isParallelState(state)) {
       Object.keys(state.states)
         .filter(
@@ -117,14 +112,13 @@ export class StateMachine {
               IsDescendant(stateToEnterID, childID)
             )
         )
-        .forEach((childID: StateID) =>
-          this.addAncestorStateToEnter(
+        .forEach((childID: StateID) => {
+          this.addDescendantStatesToEnter(
             childID,
-            stateID,
             statesToEnter,
             statesForDefaultEntry
-          )
-        );
+          );
+        });
     }
   }
 
@@ -160,18 +154,13 @@ export class StateMachine {
     });
   }
 
-  // Used only for testing
-  __setConfiguration__(stateIDs: StateID[]) {
-    this.configuration = new OrderedSet(stateIDs);
-  }
-
   getCurrentState() {
     const currentStateList = this.configuration
       .toList()
       .filter((stateID) => isAtomicState(this.stateHash[stateID]));
 
     if (
-      currentStateList.size() <= 1 &&
+      currentStateList.size() === 1 &&
       currentStateList.head().split(CHILD_DELIMITER).length === 1
     ) {
       return currentStateList.head().split(CHILD_DELIMITER)[0];

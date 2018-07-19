@@ -4,7 +4,6 @@ import {StateMachine} from './StateMachine';
 
 describe('getCurrentState()', () => {
   type fields = {
-    configuration: StateID[];
     stateMachine: StateMachineSchema;
   };
 
@@ -16,7 +15,6 @@ describe('getCurrentState()', () => {
     {
       name: 'should return simple states',
       fields: {
-        configuration: ['idle'],
         stateMachine: {initial: 'idle', states: {idle: {}}},
       },
       want: 'idle',
@@ -24,7 +22,6 @@ describe('getCurrentState()', () => {
     {
       name: 'should return substates',
       fields: {
-        configuration: ['idle', 'idle.children'],
         stateMachine: {
           initial: 'idle',
           states: {
@@ -42,7 +39,6 @@ describe('getCurrentState()', () => {
     {
       name: 'should return substates of substates',
       fields: {
-        configuration: ['idle', 'idle.children', 'idle.children.grandchildren'],
         stateMachine: {
           initial: 'idle',
           states: {
@@ -66,12 +62,6 @@ describe('getCurrentState()', () => {
     {
       name: 'should return maintain parallel states',
       fields: {
-        configuration: [
-          'idle',
-          'idle.children',
-          'idle.children.grandchildren',
-          'idle.brother.grandBrotherChildren',
-        ],
         stateMachine: {
           initial: 'idle',
           states: {
@@ -104,9 +94,6 @@ describe('getCurrentState()', () => {
   tests.forEach((tt) => {
     it(tt.name, () => {
       const stateMachine = new StateMachine(tt.fields.stateMachine);
-
-      stateMachine.__setConfiguration__(tt.fields.configuration);
-
       expect(stateMachine.getCurrentState()).toEqual(tt.want);
     });
   });
