@@ -1,9 +1,9 @@
-import {OrderedSet} from './../DataTypes/OrderedSet';
-import {StateID, StateHash} from './../State/types';
-import {Transition} from './types';
+import {findLCCA, isDescendant, getProperAncestors} from '../State/state';
+import {isCompoundState, isAtomicState} from '../State';
 import {List} from '../DataTypes/List';
-import {isCompoundState} from '../State';
-import {findLCCA, isDescendant} from '../State/state';
+import {OrderedSet} from './../DataTypes/OrderedSet';
+import {StateID, StateHash, State} from './../State/types';
+import {Transition, Event} from './types';
 
 export function newTransition(transition: Partial<Transition>): Transition {
   return {
@@ -11,6 +11,7 @@ export function newTransition(transition: Partial<Transition>): Transition {
     events: transition.events || [],
     source: transition.source,
     cond: transition.cond || [],
+    actions: transition.actions || [],
   };
 }
 
@@ -44,4 +45,57 @@ export function getEffectiveTargetStates(
 ): OrderedSet<StateID> {
   // TODO: Derefence History states (need to use stateHash)
   return new OrderedSet<StateID>(transition.target);
+}
+
+export function selectTransitions(
+  states: OrderedSet<StateID>,
+  stateHash: StateHash,
+  event?: Event
+): OrderedSet<Transition> {
+  let enabledTransitions = new OrderedSet<Transition>();
+  const atomicStates = states
+    .toList()
+    .map((stateID: StateID) => stateHash[stateID])
+    .filter(isAtomicState)
+    .map((state: State) => state.id);
+
+  for (let i = 0; i < atomicStates.size(); i++) {
+    const state = atomicStates.list[0];
+
+    const statesToEnter = new List<StateID>([state]).concat(
+      getProperAncestors(state)
+    );
+
+    loop: for (let j = 0; j < statesToEnter.size(); j++) {
+      const state = stateHash[statesToEnter[j]];
+
+      for (const transition of state.transitions) {
+        if (conditionMatch(transition)) {
+          if (
+            (!event && !transition.events.length) ||
+            transition.events.indexOf(event) > -1
+          ) {
+            enabledTransitions.add(transition);
+            break loop;
+          }
+        }
+      }
+    }
+  }
+
+  return removeConflictingTransitions(enabledTransitions);
+}
+
+function conditionMatch(transition: Transition): boolean {
+  return !transition.cond.length;
+}
+
+function removeConflictingTransitions(
+  transitions: OrderedSet<Transition>
+): OrderedSet<Transition> {
+  return transitions;
+}
+
+export function executeTransitionActions(transition: Transition, event: Event) {
+  transition.actions.forEach((action) => action(event));
 }

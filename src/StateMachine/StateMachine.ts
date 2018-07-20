@@ -5,17 +5,24 @@ import {
   newTransition,
   getTransitionDomain,
   getEffectiveTargetStates,
+  selectTransitions,
+  executeTransitionActions,
 } from '../Transition/transition';
 import {OrderedSet} from './../DataTypes/OrderedSet';
 import {StateHash, StateID} from './../State/types';
 import {StateMachineSchema} from './../Schema/StateSchema/types';
-import {Transition} from './../Transition/types';
+import {Transition, Event} from './../Transition/types';
 import {
   isAtomicState,
   isCompoundState,
   isParallelState,
 } from '../State/typeGards';
-import {isDescendant, getProperAncestors} from '../State/state';
+import {
+  isDescendant,
+  getProperAncestors,
+  executeStateOnExit,
+  executeStateOnEntry,
+} from '../State/state';
 
 export class StateMachine {
   private configuration: OrderedSet<StateID>;
@@ -34,7 +41,67 @@ export class StateMachine {
     );
   }
 
-  enterStates(enabledTransitions: List<Transition>) {
+  executeEvent(event: Event) {
+    let enabledTransitions = selectTransitions(
+      this.configuration,
+      this.stateHash,
+      event
+    );
+
+    if (!enabledTransitions.isEmpty()) {
+      this.microstep(enabledTransitions.toList(), event);
+    }
+
+    this.statesToInvoke.clear();
+  }
+
+  private microstep(transitions: List<Transition>, event: Event) {
+    this.exitStates(transitions, event);
+    this.executeTransitionContent(transitions, event);
+    this.enterStates(transitions, event);
+  }
+
+  private exitStates(transitions: List<Transition>, event: Event) {
+    const statesToExit = this.computeExitStates(transitions);
+
+    statesToExit.forEach((stateID: StateID) => {
+      this.statesToInvoke.delete(stateID);
+
+      const state = this.stateHash[stateID];
+      executeStateOnExit(state, event);
+
+      this.configuration.delete(stateID);
+    });
+  }
+
+  private computeExitStates(transitions: List<Transition>): List<StateID> {
+    const statesToExit = new List<StateID>();
+
+    transitions.forEach((transition: Transition) => {
+      if (transition.target) {
+        const domain: StateID = getTransitionDomain(this.stateHash, transition);
+
+        this.configuration.toList().forEach((stateID: StateID) => {
+          if (isDescendant(stateID, domain)) {
+            statesToExit.append(stateID);
+          }
+        });
+      }
+    });
+
+    return statesToExit;
+  }
+
+  private executeTransitionContent(
+    transitions: List<Transition>,
+    event: Event
+  ) {
+    transitions.forEach((transition) => {
+      executeTransitionActions(transition, event);
+    });
+  }
+
+  private enterStates(enabledTransitions: List<Transition>, event?: Event) {
     const statesToEnter = new OrderedSet<StateID>();
     const statesForDefaultEntry = new OrderedSet<StateID>();
 
@@ -49,6 +116,8 @@ export class StateMachine {
     statesToEnter.toList().forEach((stateID: StateID) => {
       this.configuration.add(stateID);
       this.statesToInvoke.add(stateID);
+
+      executeStateOnEntry(this.stateHash[stateID], event);
     });
   }
 
@@ -129,7 +198,7 @@ export class StateMachine {
   ) {
     const ancestors = getProperAncestors(stateID, ancestor);
 
-    ancestors.toList().forEach((anc) => {
+    ancestors.forEach((anc) => {
       statesToEnter.add(anc);
 
       const ancestorState = this.stateHash[anc];

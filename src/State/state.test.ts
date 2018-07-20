@@ -1,4 +1,3 @@
-import {OrderedSet} from './../DataTypes/OrderedSet';
 import {CHILD_DELIMITER} from '../constants';
 import {StateID, StateHash} from './types';
 import {
@@ -59,12 +58,12 @@ describe('GetProperAncestors()', () => {
   const tests: {
     name: string;
     args: args;
-    want: OrderedSet<StateID>;
+    want: List<StateID>;
   }[] = [
     {
       name: 'should return the set of all ancestor of state1 in ancestry order',
       args: {state1: 'grandparentparent.grandparent.parent.child.grandchild'},
-      want: new OrderedSet<StateID>([
+      want: new List<StateID>([
         'grandparentparent.grandparent.parent.child',
         'grandparentparent.grandparent.parent',
         'grandparentparent.grandparent',
@@ -78,7 +77,7 @@ describe('GetProperAncestors()', () => {
         state1: 'grandparentparent.grandparent.parent.child.grandchild',
         state2: 'grandparentparent.grandparent',
       },
-      want: new OrderedSet<StateID>([
+      want: new List<StateID>([
         'grandparentparent.grandparent.parent.child',
         'grandparentparent.grandparent.parent',
       ]),
