@@ -1,4 +1,4 @@
-import {CHILD_DELIMITER} from './../constants';
+import {CHILD_DELIMITER, ROOT_STATE} from './../constants';
 import {List} from '../DataTypes/List';
 import {newStateHashFromSchema} from '../State/interpreters/stateHash';
 import {
@@ -24,6 +24,7 @@ import {
   executeStateOnExit,
   executeStateOnEntry,
 } from '../State/state';
+import {isParallelStateSchema} from '../Schema/StateSchema';
 
 export class StateMachine {
   private configuration: OrderedSet<StateID>;
@@ -37,7 +38,13 @@ export class StateMachine {
 
     this.enterStates(
       new List<Transition>([
-        newTransition({target: [stateMachineSchema.initial]}),
+        newTransition({
+          target: [
+            isParallelStateSchema(stateMachineSchema)
+              ? ROOT_STATE
+              : stateMachineSchema.initial,
+          ],
+        }),
       ])
     );
   }

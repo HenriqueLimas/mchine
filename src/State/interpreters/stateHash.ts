@@ -1,3 +1,4 @@
+import {ROOT_STATE} from './../../constants';
 import {getParentStateID, concatStateIDs} from '../state';
 import {Queue} from '../../DataTypes/Queue';
 import {
@@ -13,7 +14,18 @@ export function newStateHashFromSchema(
   stateMachineSchema: StateMachineSchema
 ): StateHash {
   const states = stateMachineSchema.states;
-  const stateHash: StateHash = {};
+  const stateHash: StateHash = {
+    [ROOT_STATE]: newStateFromSchema(
+      {
+        initial: stateMachineSchema.initial,
+        parallel: stateMachineSchema.parallel,
+        states: stateMachineSchema.states,
+      },
+      {
+        id: ROOT_STATE,
+      }
+    ),
+  };
 
   const queue = new Queue<StateID>(Object.keys(states));
 

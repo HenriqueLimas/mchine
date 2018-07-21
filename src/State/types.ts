@@ -1,5 +1,6 @@
+import {ROOT_STATE} from './../constants';
 import {OrderedSet} from './../DataTypes/OrderedSet';
-import {StateID} from './types';
+import {StateID, InitialState, AtomicState} from './types';
 import {Action} from './../Action';
 import {Transition} from './../Transition';
 
@@ -15,7 +16,7 @@ export type PseudoState = InitialState;
 // AtomicState a leaf state without no children
 export type AtomicState = {
   id: StateID;
-  parentId: StateID;
+  parentId?: StateID;
   transitions: Transition[];
   onEntry: Action[];
   onExit: Action[];
@@ -33,11 +34,18 @@ export type ParallelState = AtomicState & {
   states: Record<string, StateID>;
 };
 
+export type RootState = AtomicState & {
+  id: ROOT_STATE;
+  initial?: InitialState;
+  parallel?: boolean;
+  states: Record<string, StateID>;
+};
+
 // State represents the differnt types of states
 export type CompoundState = StateNode | ParallelState;
 
 // State represents the differnt types of states
-export type State = StateNode | ParallelState | AtomicState;
+export type State = RootState | StateNode | ParallelState | AtomicState;
 
 export type StateSet = OrderedSet<State>;
 

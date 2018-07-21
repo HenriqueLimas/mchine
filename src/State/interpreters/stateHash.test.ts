@@ -1,3 +1,4 @@
+import {ROOT_STATE} from './../../constants';
 import {StateHash} from '../types';
 import {StateMachineSchema} from '../../Schema/StateSchema';
 import {newStateHashFromSchema} from './stateHash';
@@ -28,6 +29,15 @@ describe('schemaToState()', () => {
         },
       },
       want: {
+        [ROOT_STATE]: {
+          id: ROOT_STATE,
+          onEntry: [],
+          onExit: [],
+          transitions: [],
+          states: {
+            idle: 'idle',
+          },
+        },
         idle: {
           id: 'idle',
           parentId: null,
@@ -72,6 +82,15 @@ describe('schemaToState()', () => {
         },
       },
       want: {
+        [ROOT_STATE]: {
+          id: ROOT_STATE,
+          onEntry: [],
+          onExit: [],
+          transitions: [],
+          states: {
+            idle: 'idle',
+          },
+        },
         'idle': {
           id: 'idle',
           initial: 'idle.internalState',
@@ -145,6 +164,15 @@ describe('schemaToState()', () => {
         },
       },
       want: {
+        [ROOT_STATE]: {
+          id: ROOT_STATE,
+          onEntry: [],
+          onExit: [],
+          transitions: [],
+          states: {
+            idle: 'idle',
+          },
+        },
         'idle': {
           id: 'idle',
           initial: 'idle.internalState',
@@ -245,6 +273,17 @@ describe('schemaToState()', () => {
         },
       },
       want: {
+        [ROOT_STATE]: {
+          id: ROOT_STATE,
+          onEntry: [],
+          onExit: [],
+          transitions: [],
+          parallel: true,
+          states: {
+            bold: 'bold',
+            font: 'font',
+          },
+        },
         'bold': {
           id: 'bold',
           initial: 'bold.internalBoldState',

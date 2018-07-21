@@ -1,4 +1,12 @@
-import {CompoundState, ParallelState, State, StateNode} from '../types';
+import {RootSchema} from './../../Schema/StateSchema/types';
+import {
+  CompoundState,
+  ParallelState,
+  State,
+  StateNode,
+  AtomicState,
+  RootState,
+} from '../types';
 import {
   CompoundStateSchema,
   isCompoundStateSchema,
@@ -7,6 +15,7 @@ import {
 } from '../../Schema/StateSchema';
 import {newTransactionFromEventSchema} from './transaction';
 import {concatStateIDs} from '../state';
+import {isRootState} from '../typeGards';
 
 export function newStateFromSchema(
   stateSchema: StateSchema,
@@ -14,11 +23,29 @@ export function newStateFromSchema(
 ): State {
   let state: State = {
     id: partialState.id,
-    parentId: partialState.parentId,
-    transitions: [],
     onEntry: stateSchema.onEntry || [],
     onExit: stateSchema.onExit || [],
+    parentId: (<AtomicState>partialState).parentId,
+    transitions: [],
   };
+
+  if (isRootState(state) && isCompoundStateSchema(stateSchema)) {
+    (<RootState>state).states = Object.keys(<RootSchema>(
+      stateSchema.states
+    )).reduce(
+      (states, stateID) => ({
+        ...states,
+        [stateID]: stateID,
+      }),
+      {}
+    );
+
+    state.initial = (<RootSchema>stateSchema).initial;
+    state.parallel = (<RootSchema>stateSchema).parallel;
+
+    return state;
+  }
+
   if (isCompoundStateSchema(stateSchema)) {
     (<CompoundState>state).states = Object.keys(
       (<CompoundStateSchema>stateSchema).states
