@@ -1,4 +1,6 @@
-# 🎲 mchine
+# 🎲 mchine 
+
+[![Build Status](https://travis-ci.org/HenriqueLimas/mchine.svg?branch=master)](https://travis-ci.org/HenriqueLimas/mchine)
 
 A Simple State Machine
 
