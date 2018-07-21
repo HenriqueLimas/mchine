@@ -1,1 +1,3 @@
-export * from './mchine';
+import {mchine} from './mchine';
+
+export default mchine;
