@@ -5,6 +5,7 @@ import {OrderedSet} from './../DataTypes/OrderedSet';
 import {StateID, StateHash, State} from './../State/types';
 import {Transition} from './types';
 import {Event} from '../Event/types';
+import {eventMatch} from '../Event/event';
 
 export function newTransition(transition: Partial<Transition>): Transition {
   return {
@@ -61,7 +62,7 @@ export function selectTransitions(
     .map((state: State) => state.id);
 
   for (let i = 0; i < atomicStates.size(); i++) {
-    const state = atomicStates.list[0];
+    const state = atomicStates.list[i];
 
     const statesToEnter = new List<StateID>([state]).concat(
       getProperAncestors(state)
@@ -74,8 +75,9 @@ export function selectTransitions(
         if (conditionMatch(transition)) {
           if (
             (!event && !transition.events.length) ||
-            transition.events.filter((e: Event) => e.name === event.name)
-              .length > 0
+            transition.events.filter((transitionEvent: Event) =>
+              eventMatch(transitionEvent, event, state)
+            ).length > 0
           ) {
             enabledTransitions.add(transition);
             break loop;
