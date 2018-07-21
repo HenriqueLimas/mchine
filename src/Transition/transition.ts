@@ -3,7 +3,8 @@ import {isCompoundState, isAtomicState} from '../State';
 import {List} from '../DataTypes/List';
 import {OrderedSet} from './../DataTypes/OrderedSet';
 import {StateID, StateHash, State} from './../State/types';
-import {Transition, Event} from './types';
+import {Transition} from './types';
+import {Event} from '../Event/types';
 
 export function newTransition(transition: Partial<Transition>): Transition {
   return {
@@ -67,13 +68,14 @@ export function selectTransitions(
     );
 
     loop: for (let j = 0; j < statesToEnter.size(); j++) {
-      const state = stateHash[statesToEnter[j]];
+      const state = stateHash[statesToEnter.list[j]];
 
       for (const transition of state.transitions) {
         if (conditionMatch(transition)) {
           if (
             (!event && !transition.events.length) ||
-            transition.events.indexOf(event) > -1
+            transition.events.filter((e: Event) => e.name === event.name)
+              .length > 0
           ) {
             enabledTransitions.add(transition);
             break loop;

@@ -1,5 +1,5 @@
 import {CHILD_DELIMITER} from './../constants';
-import {Event} from './../Transition/types';
+import {Event} from '../Event/types';
 import {isCompoundState} from './typeGards';
 import {List} from '../DataTypes/List';
 import {StateID, StateHash, State, AtomicState} from './types';

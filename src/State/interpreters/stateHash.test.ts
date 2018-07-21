@@ -35,8 +35,9 @@ describe('schemaToState()', () => {
             {
               target: ['loading'],
               source: 'idle',
-              events: ['fetch'],
+              events: [{name: 'fetch'}],
               cond: [],
+              actions: [],
             },
           ],
           onEntry: [],
@@ -79,8 +80,9 @@ describe('schemaToState()', () => {
             {
               target: ['loading'],
               source: 'idle',
-              events: ['fetch'],
+              events: [{name: 'fetch'}],
               cond: [],
+              actions: [],
             },
           ],
           states: {
@@ -96,8 +98,9 @@ describe('schemaToState()', () => {
             {
               target: ['idle'],
               source: 'idle.internalState',
-              events: ['doNothing'],
+              events: [{name: 'doNothing'}],
               cond: [],
+              actions: [],
             },
           ],
           onEntry: [],
@@ -150,8 +153,9 @@ describe('schemaToState()', () => {
             {
               target: ['loading'],
               source: 'idle',
-              events: ['fetch'],
+              events: [{name: 'fetch'}],
               cond: [],
+              actions: [],
             },
           ],
           states: {
@@ -168,8 +172,9 @@ describe('schemaToState()', () => {
             {
               target: ['idle'],
               source: 'idle.internalState',
-              events: ['doNothing'],
+              events: [{name: 'doNothing'}],
               cond: [],
+              actions: [],
             },
           ],
           states: {
@@ -185,8 +190,9 @@ describe('schemaToState()', () => {
             {
               target: ['loading'],
               source: 'idle.internalState.subinternal',
-              events: ['goSomewhere'],
+              events: [{name: 'goSomewhere'}],
               cond: [],
+              actions: [],
             },
           ],
           onEntry: [],
@@ -247,8 +253,9 @@ describe('schemaToState()', () => {
             {
               target: ['loading'],
               source: 'bold',
-              events: ['fetch'],
+              events: [{name: 'fetch'}],
               cond: [],
+              actions: [],
             },
           ],
           states: {
@@ -264,8 +271,9 @@ describe('schemaToState()', () => {
             {
               target: ['bold'],
               source: 'bold.internalBoldState',
-              events: ['doNothing'],
+              events: [{name: 'doNothing'}],
               cond: [],
+              actions: [],
             },
           ],
           onEntry: [],
@@ -280,8 +288,9 @@ describe('schemaToState()', () => {
             {
               target: ['loading'],
               source: 'font',
-              events: ['fetch'],
+              events: [{name: 'fetch'}],
               cond: [],
+              actions: [],
             },
           ],
           states: {
@@ -297,8 +306,9 @@ describe('schemaToState()', () => {
             {
               target: ['font'],
               source: 'font.internalFontState',
-              events: ['doNothing'],
+              events: [{name: 'doNothing'}],
               cond: [],
+              actions: [],
             },
           ],
           onEntry: [],

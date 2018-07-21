@@ -9,9 +9,10 @@ import {
   executeTransitionActions,
 } from '../Transition/transition';
 import {OrderedSet} from './../DataTypes/OrderedSet';
-import {StateHash, StateID} from './../State/types';
+import {StateHash, StateID, CurrentState} from './../State/types';
 import {StateMachineSchema} from './../Schema/StateSchema/types';
-import {Transition, Event} from './../Transition/types';
+import {Transition} from './../Transition/types';
+import {Event} from '../Event/types';
 import {
   isAtomicState,
   isCompoundState,
@@ -222,7 +223,7 @@ export class StateMachine {
     });
   }
 
-  getCurrentState() {
+  getCurrentState(): CurrentState {
     const currentStateList = this.configuration
       .toList()
       .filter((stateID) => isAtomicState(this.stateHash[stateID]));

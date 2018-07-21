@@ -1,7 +1,8 @@
 import {List} from './../DataTypes/List';
 import {HashTable} from './../DataTypes/HashTable';
 import {StateSet, StateID} from './../State/types';
-import {Event, Transition, TransitionSet} from './../Transition/types';
+import {Transition, TransitionSet} from './../Transition/types';
+import {Event} from '../Event/types';
 import {State} from '../State/types';
 
 interface StateMachine {

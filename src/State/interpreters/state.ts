@@ -45,7 +45,7 @@ export function newStateFromSchema(
     state.transitions = Object.keys(stateSchema.events).map((eventName) => {
       const eventSchema = stateSchema.events[eventName];
       return newTransactionFromEventSchema(stateSchema.events[eventName], {
-        events: [eventName],
+        events: [{name: eventName}],
         source: state.id,
         target: [eventSchema.target],
         cond: eventSchema.cond,

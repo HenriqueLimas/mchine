@@ -24,6 +24,7 @@ describe('NewTransactionFromEventSchema', () => {
         target: ['idle'],
         source: 'initial',
         events: [],
+        actions: [],
       },
     },
 
@@ -38,6 +39,7 @@ describe('NewTransactionFromEventSchema', () => {
         target: ['idle'],
         source: 'initial',
         events: [],
+        actions: [],
       },
     },
   ];

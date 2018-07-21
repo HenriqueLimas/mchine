@@ -42,3 +42,11 @@ export type State = StateNode | ParallelState | AtomicState;
 export type StateSet = OrderedSet<State>;
 
 export type StateHash = Record<StateID, State>;
+
+export type CurrentAtomicState = string;
+export type CurrentCompoundState = Record<string, CurrentAtomicState>;
+
+export type CurrentStateNode = CurrentAtomicState | CurrentCompoundState;
+export type CurrentState =
+  | CurrentAtomicState
+  | Record<StateID, CurrentStateNode>;

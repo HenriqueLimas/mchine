@@ -10,5 +10,6 @@ export function newTransactionFromEventSchema(
     target: partialTransition.target,
     source: partialTransition.source,
     cond: eventSchema.cond || [],
+    actions: eventSchema.actions || [],
   };
 }

@@ -1,4 +1,4 @@
-import {Event} from './../../Transition';
+import {Event} from '../../Event/types';
 import {ExternalData} from '../TransitionSchema';
 
 export type ActionSchemaString = string;
@@ -7,9 +7,9 @@ export type ActionSchemaObject = {
   [key: string]: any;
 };
 
-export type ActionSchemaFunction = ((data: ExternalData, event: Event) => void);
+export type ActionSchemaFunction = ((event: Event) => void);
 
 export type ActionSchema =
   // | ActionSchemaString
   // | ActionSchemaObject
-  | ActionSchemaFunction;
+  ActionSchemaFunction;
