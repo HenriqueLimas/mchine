@@ -10,7 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "mchine": "0.0.1",
+    "mchine": "1.0.0",
     "morphdom": "^2.3.3"
   },
   "devDependencies": {
