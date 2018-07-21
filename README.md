@@ -1,9 +1,11 @@
 # 🎲 mchine
+
 A Simple State Machine
 
 ## Why?
-Because State machine are sexy, and easy to use. Using a state machine will change how you think and develop 
-a Front-end application. Think more on your view's state instead of his transactions, this will reduce 
+
+Because State machine are sexy, and easy to use. Using a state machine will change how you think and develop
+a Front-end application. Think more on your view's state instead of his transactions, this will reduce
 a lot of the if else and make the code more maintanable.
 
 ## Install
@@ -12,46 +14,84 @@ a lot of the if else and make the code more maintanable.
 npm install mchine
 ```
 
-## How to use?
+## How to use
 
 ```js
-import mchine from 'mchine';
+import mchine from "mchine";
 
-const stateMachine = {
-  idle: {
-    actions: {
-      login: (machine, email, password) => {
-        machine.changeStateTo('sending')
-        return API.login(email, password)
-          .then(() => machine.dispatch('success'))
-          .catch(() => machine.dispatch('error'));
-        
+const stateMachineSchema = {
+  initial: "idle",
+  states: {
+    idle: {
+      events: {
+        login: {
+          target: "sending"
+        }
       }
-    }
-  },
-  sending: {
-    actions: {
-      success: machine => {
-        machine.changeStateTo('idle');
-      },
-      error: machine => {
-        machine.changeStateTo('error');
+    },
+    sending: {
+      events: {
+        success: {
+          target: "idle"
+        },
+        error: {
+          target: "error"
+        }
       }
-    }
+    },
+    error: {}
   }
 };
 
-const machine = mchine(stateMachine, 'idle');
+const stateMachine = mchine(stateMachineSchema);
 
-machine.currentState; // [idle]
+stateMachine.getCurrentState(); // idle
 
-machine.dispatch('login', 'john@example.com', 'Some.secure.password42')
-  .then(() => {
-    machine.currentState; // [sending]
-  });
-  
-machine.dispatch('i_do_not_exist_in_that_state', 42); // null
+stateMachine.transition("login");
+stateMachine.getCurrentState(); // sending
+
+API.login("john@example.com", "Some.secure.password42")
+  .then(() => stateMachine.transition("success")) // idle
+  .catch(() => stateMachine.transition("error")); // error
+```
+
+## How to import
+
+### Browser (Using modules)
+
+```html
+  <script type="module">
+    import mchine from './node_modules/mchine/dist/index.m.js';
+
+    // some magic code ✨...
+  </script>
+```
+
+### Browser (UMD)
+
+```html
+  <script src="./node_modules/mchine/dist/index.umd.js"></script>
+  <script>
+    // some magic code ✨...
+  </script>
+```
+
+### Transpilers (Babel, Rollup, Typescript, ...)
+
+```js
+import mchine from "mchine";
+
+// Some magic code ✨...
+```
+
+### Node
+
+```js
+const mchine = require("mchine");
+
+// Some magic code ✨...
 ```
 
 ## References
-- API was stolen from [The Rise of State Machine](https://www.smashingmagazine.com/2018/01/rise-state-machines/)
+
+- Implemention of MChine follows the main algorithm of the [SCXML spec from the W3C](https://www.w3.org/TR/scxml/#invoke)
