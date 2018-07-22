@@ -1,5 +1,4 @@
 import {Event} from '../../Event/types';
-import {ExternalData} from '../TransitionSchema';
 
 export type ActionSchemaString = string;
 export type ActionSchemaObject = {

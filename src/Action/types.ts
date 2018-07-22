@@ -1,4 +1,5 @@
 import {Event} from '../Event/types';
-import {ExternalData} from './../Schema/TransitionSchema/types';
 
-export type Action = ((event: Event) => void);
+export type ActionString = string;
+export type ActionFunction = ((event: Event) => void);
+export type Action = ActionFunction | ActionString;

@@ -1,3 +1,4 @@
+import {Action} from './../Action/types';
 import {findLCCA, isDescendant, getProperAncestors} from '../State/state';
 import {isCompoundState, isAtomicState} from '../State';
 import {List} from '../DataTypes/List';
@@ -6,6 +7,7 @@ import {StateID, StateHash, State} from './../State/types';
 import {Transition} from './types';
 import {Event} from '../Event/types';
 import {eventMatch} from '../Event/event';
+import {executeAction} from '../Action/action';
 
 export function newTransition(transition: Partial<Transition>): Transition {
   return {
@@ -101,5 +103,5 @@ function removeConflictingTransitions(
 }
 
 export function executeTransitionActions(transition: Transition, event: Event) {
-  transition.actions.forEach((action) => action(event));
+  transition.actions.forEach((action: Action) => executeAction(action, event));
 }
