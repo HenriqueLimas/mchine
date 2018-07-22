@@ -19,34 +19,51 @@
   <script src="./node_modules/morphdom/dist/morphdom-umd.js"></script>
   <script type="module">
     import mchine from './node_modules/mchine/dist/index.m.js';
-    import stateMachine from './stateMachine.m.js';
+    import stateMachineSchema from './stateMachine.m.js';
 
     const API = {
       login: () => new Promise((_, r) => setTimeout(r, 2000)),
     };
 
-    const machine = mchine(stateMachine);
-    const transition = machine.transition;
+    const stateMachine = mchine(stateMachineSchema);
 
-    machine.transition = (name, ...payload) => {
-      transition(name, ...payload);
-      const currentState = machine.getCurrentState()
+    const dispatch = (name, ...payload) => {
+      stateMachine.transition(name, ...payload);
+      const currentState = stateMachine.getCurrentState()
+
+      const mapActions = {
+        'sending': (email, password) => {
+          API.login(email, password)
+            .then(() => dispatch('success'))
+            .catch(() => dispatch('error'))
+        }
+      }
+
+      const mapDisabled = {
+        sending: true
+      }
+
+      const mapMessage = {
+        error: '<span>Error</span>',
+        sending: '<span>Loading...</span>'
+      }
+
+      mapActions[currentState] && mapActions[currentState](...payload)
 
       morphdom(form, `<form class="js-form">
         <input type="email"
               name="email"
-              ${currentState === 'sending' ? 'disabled' : ''}
+              ${mapDisabled[currentState] ? 'disabled' : ''}
               value=${form.elements.email.value}>
 
         <input type="password"
               name="password"
-              ${currentState === 'sending' ? 'disabled' : ''}
+              ${mapDisabled[currentState] ? 'disabled' : ''}
               value=${form.elements.password.value}>
 
-        <button ${currentState === 'sending' ? 'disabled' : ''} class="js-submit" type="submit">Login</button>
+        <button ${mapDisabled[currentState] ? 'disabled' : ''} class="js-submit" type="submit">Login</button>
 
-        ${(currentState === 'error') ? '<span>Error</span>' : ''}
-        ${(currentState === 'sending' ? `<span>Loading...</span>` : '')}
+        ${mapMessage[currentState]}
       </form>`)
     }
 
@@ -58,11 +75,7 @@
 
       const { email, password } = form.elements;
 
-      machine.transition('login')
-
-      API.login(email, password)
-        .then(() => machine.transition('success'))
-        .catch(() => machine.transition('error'))
+      dispatch('login', email, password)
     })
   </script>
 </body>

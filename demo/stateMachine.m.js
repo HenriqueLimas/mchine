@@ -20,7 +20,9 @@ const stateMachine = {
     },
     error: {
       events: {
-        target: 'sending',
+        login: {
+          target: 'sending',
+        },
       },
     },
   },
